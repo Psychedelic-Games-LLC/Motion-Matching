@@ -136,56 +136,56 @@ float orbit_camera_update_azimuth(
     vec3 gamepadaxis = desired_strafe ? vec3() : gamepadstick_right;
     return azimuth + 2.0f * dt * -gamepadaxis.x;
 }
-
-float orbit_camera_update_altitude(
-        const float altitude,
-        const vec3 gamepadstick_right,
-        const bool desired_strafe,
-        const float dt)
-{
-    vec3 gamepadaxis = desired_strafe ? vec3() : gamepadstick_right;
-    return clampf(altitude + 2.0f * dt * gamepadaxis.z, 0.0, 0.4f * PIf);
-}
-
-float orbit_camera_update_distance(
-        const float distance,
-        const float dt)
-{
-    float gamepadzoom =
-            IsGamepadButtonDown(GAMEPAD_PLAYER, GAMEPAD_BUTTON_LEFT_TRIGGER_1)  ? +1.0f :
-            IsGamepadButtonDown(GAMEPAD_PLAYER, GAMEPAD_BUTTON_RIGHT_TRIGGER_1) ? -1.0f : 0.0f;
-
-    return clampf(distance +  10.0f * dt * gamepadzoom, 0.1f, 100.0f);
-}
-
-// Updates the camera using the orbit cam controls
-void orbit_camera_update(
-        Camera3D& cam,
-        float& camera_azimuth,
-        float& camera_altitude,
-        float& camera_distance,
-        const vec3 target,
-        const vec3 gamepadstick_right,
-        const bool desired_strafe,
-        const float dt)
-{
-    camera_azimuth = orbit_camera_update_azimuth(camera_azimuth, gamepadstick_right, desired_strafe, dt);
-    camera_altitude = orbit_camera_update_altitude(camera_altitude, gamepadstick_right, desired_strafe, dt);
-    camera_distance = orbit_camera_update_distance(camera_distance, dt);
-
-    quat rotation_azimuth = quat_from_angle_axis(camera_azimuth, vec3(0, 1, 0));
-    vec3 position = quat_mul_vec3(rotation_azimuth, vec3(0, 0, camera_distance));
-    vec3 axis = normalize(cross(position, vec3(0, 1, 0)));
-
-    quat rotation_altitude = quat_from_angle_axis(camera_altitude, axis);
-
-    vec3 eye = target + quat_mul_vec3(rotation_altitude, position);
-
-    cam.target = (Vector3){ target.x, target.y, target.z };
-    cam.position = (Vector3){ eye.x, eye.y, eye.z };
-
-    UpdateCamera(&cam);
-}
+//
+//float orbit_camera_update_altitude(
+//        const float altitude,
+//        const vec3 gamepadstick_right,
+//        const bool desired_strafe,
+//        const float dt)
+//{
+//    vec3 gamepadaxis = desired_strafe ? vec3() : gamepadstick_right;
+//    return clampf(altitude + 2.0f * dt * gamepadaxis.z, 0.0, 0.4f * PIf);
+//}
+//
+//float orbit_camera_update_distance(
+//        const float distance,
+//        const float dt)
+//{
+//    float gamepadzoom =
+//            IsGamepadButtonDown(GAMEPAD_PLAYER, GAMEPAD_BUTTON_LEFT_TRIGGER_1)  ? +1.0f :
+//            IsGamepadButtonDown(GAMEPAD_PLAYER, GAMEPAD_BUTTON_RIGHT_TRIGGER_1) ? -1.0f : 0.0f;
+//
+//    return clampf(distance +  10.0f * dt * gamepadzoom, 0.1f, 100.0f);
+//}
+//
+//// Updates the camera using the orbit cam controls
+//void orbit_camera_update(
+//        Camera3D& cam,
+//        float& camera_azimuth,
+//        float& camera_altitude,
+//        float& camera_distance,
+//        const vec3 target,
+//        const vec3 gamepadstick_right,
+//        const bool desired_strafe,
+//        const float dt)
+//{
+//    camera_azimuth = orbit_camera_update_azimuth(camera_azimuth, gamepadstick_right, desired_strafe, dt);
+//    camera_altitude = orbit_camera_update_altitude(camera_altitude, gamepadstick_right, desired_strafe, dt);
+//    camera_distance = orbit_camera_update_distance(camera_distance, dt);
+//
+//    quat rotation_azimuth = quat_from_angle_axis(camera_azimuth, vec3(0, 1, 0));
+//    vec3 position = quat_mul_vec3(rotation_azimuth, vec3(0, 0, camera_distance));
+//    vec3 axis = normalize(cross(position, vec3(0, 1, 0)));
+//
+//    quat rotation_altitude = quat_from_angle_axis(camera_altitude, axis);
+//
+//    vec3 eye = target + quat_mul_vec3(rotation_altitude, position);
+//
+//    cam.target = (Vector3){ target.x, target.y, target.z };
+//    cam.position = (Vector3){ eye.x, eye.y, eye.z };
+//
+//    UpdateCamera(&cam);
+//}
 
 //--------------------------------------
 
@@ -1230,16 +1230,16 @@ int main(void)
 
     // Scene Obstacles
 
-    array1d<vec3> obstacles_positions(3);
-    array1d<vec3> obstacles_scales(3);
+    array1d<vec3> obstacles_positions(0);
+    array1d<vec3> obstacles_scales(0);
 
-    obstacles_positions(0) = vec3(5.0f, 0.0f, 6.0f);
-    obstacles_positions(1) = vec3(-3.0f, 0.0f, -5.0f);
-    obstacles_positions(2) = vec3(-8.0f, 0.0f, 3.0f);
-
-    obstacles_scales(0) = vec3(2.0f, 1.0f, 5.0f);
-    obstacles_scales(1) = vec3(4.0f, 1.0f, 4.0f);
-    obstacles_scales(2) = vec3(2.0f, 1.0f, 2.0f);
+//    obstacles_positions(0) = vec3(5.0f, 0.0f, 6.0f);
+//    obstacles_positions(1) = vec3(-3.0f, 0.0f, -5.0f);
+//    obstacles_positions(2) = vec3(-8.0f, 0.0f, 3.0f);
+//
+//    obstacles_scales(0) = vec3(2.0f, 1.0f, 5.0f);
+//    obstacles_scales(1) = vec3(4.0f, 1.0f, 4.0f);
+//    obstacles_scales(2) = vec3(2.0f, 1.0f, 2.0f);
 
     // Ground Plane
 
@@ -2099,16 +2099,16 @@ int main(void)
 
         // Update camera
 
-        orbit_camera_update(
-                camera,
-                camera_azimuth,
-                camera_altitude,
-                camera_distance,
-                bone_positions(0) + vec3(0, 1, 0),
-                // simulation_position + vec3(0, 1, 0),
-                gamepadstick_right,
-                desired_strafe,
-                dt);
+//        orbit_camera_update(
+//                camera,
+//                camera_azimuth,
+//                camera_altitude,
+//                camera_distance,
+//                bone_positions(0) + vec3(0, 1, 0),
+//                // simulation_position + vec3(0, 1, 0),
+//                gamepadstick_right,
+//                desired_strafe,
+//                dt);
 
         // Render
 
@@ -2117,54 +2117,54 @@ int main(void)
 
         BeginMode3D(camera);
 
-        // Draw Simulation Object
-
-        DrawCylinderWires(to_Vector3(simulation_position), 0.6f, 0.6f, 0.001f, 17, ORANGE);
-        DrawSphereWires(to_Vector3(simulation_position), 0.05f, 4, 10, ORANGE);
-        DrawLine3D(to_Vector3(simulation_position), to_Vector3(
-                simulation_position + 0.6f * quat_mul_vec3(simulation_rotation, vec3(0.0f, 0.0f, 1.0f))), ORANGE);
-
-        // Draw Clamping Radius/Angles
-
-        if (clamping_enabled)
-        {
-            DrawCylinderWires(
-                    to_Vector3(simulation_position),
-                    clamping_max_distance,
-                    clamping_max_distance,
-                    0.001f, 17, SKYBLUE);
-
-            quat rotation_clamp_0 = quat_mul(quat_from_angle_axis(+clamping_max_angle, vec3(0.0f, 1.0f, 0.0f)), simulation_rotation);
-            quat rotation_clamp_1 = quat_mul(quat_from_angle_axis(-clamping_max_angle, vec3(0.0f, 1.0f, 0.0f)), simulation_rotation);
-
-            vec3 rotation_clamp_0_dir = simulation_position + 0.6f * quat_mul_vec3(rotation_clamp_0, vec3(0.0f, 0.0f, 1.0f));
-            vec3 rotation_clamp_1_dir = simulation_position + 0.6f * quat_mul_vec3(rotation_clamp_1, vec3(0.0f, 0.0f, 1.0f));
-
-            DrawLine3D(to_Vector3(simulation_position), to_Vector3(rotation_clamp_0_dir), SKYBLUE);
-            DrawLine3D(to_Vector3(simulation_position), to_Vector3(rotation_clamp_1_dir), SKYBLUE);
-        }
-
-        // Draw IK foot lock positions
-
-        if (ik_enabled)
-        {
-            for (int i = 0; i <  contact_positions.size; i++)
-            {
-                if (contact_locks(i))
-                {
-                    DrawSphereWires(to_Vector3(contact_positions(i)), 0.05f, 4, 10, PINK);
-                }
-            }
-        }
-
-        draw_trajectory(
-                trajectory_positions,
-                trajectory_rotations,
-                ORANGE);
-
-        draw_obstacles(
-                obstacles_positions,
-                obstacles_scales);
+//        // Draw Simulation Object
+//
+//        DrawCylinderWires(to_Vector3(simulation_position), 0.6f, 0.6f, 0.001f, 17, ORANGE);
+//        DrawSphereWires(to_Vector3(simulation_position), 0.05f, 4, 10, ORANGE);
+//        DrawLine3D(to_Vector3(simulation_position), to_Vector3(
+//                simulation_position + 0.6f * quat_mul_vec3(simulation_rotation, vec3(0.0f, 0.0f, 1.0f))), ORANGE);
+//
+//        // Draw Clamping Radius/Angles
+//
+//        if (clamping_enabled)
+//        {
+//            DrawCylinderWires(
+//                    to_Vector3(simulation_position),
+//                    clamping_max_distance,
+//                    clamping_max_distance,
+//                    0.001f, 17, SKYBLUE);
+//
+//            quat rotation_clamp_0 = quat_mul(quat_from_angle_axis(+clamping_max_angle, vec3(0.0f, 1.0f, 0.0f)), simulation_rotation);
+//            quat rotation_clamp_1 = quat_mul(quat_from_angle_axis(-clamping_max_angle, vec3(0.0f, 1.0f, 0.0f)), simulation_rotation);
+//
+//            vec3 rotation_clamp_0_dir = simulation_position + 0.6f * quat_mul_vec3(rotation_clamp_0, vec3(0.0f, 0.0f, 1.0f));
+//            vec3 rotation_clamp_1_dir = simulation_position + 0.6f * quat_mul_vec3(rotation_clamp_1, vec3(0.0f, 0.0f, 1.0f));
+//
+//            DrawLine3D(to_Vector3(simulation_position), to_Vector3(rotation_clamp_0_dir), SKYBLUE);
+//            DrawLine3D(to_Vector3(simulation_position), to_Vector3(rotation_clamp_1_dir), SKYBLUE);
+//        }
+//
+//        // Draw IK foot lock positions
+//
+//        if (ik_enabled)
+//        {
+//            for (int i = 0; i <  contact_positions.size; i++)
+//            {
+//                if (contact_locks(i))
+//                {
+//                    DrawSphereWires(to_Vector3(contact_positions(i)), 0.05f, 4, 10, PINK);
+//                }
+//            }
+//        }
+//
+//        draw_trajectory(
+//                trajectory_positions,
+//                trajectory_rotations,
+//                ORANGE);
+//
+//        draw_obstacles(
+//                obstacles_positions,
+//                obstacles_scales);
 
         deform_character_mesh(
                 character_mesh,
@@ -2175,310 +2175,31 @@ int main(void)
 
         DrawModel(character_model, (Vector3){0.0f, 0.0f, 0.0f}, 1.0f, RAYWHITE);
 
-        // Draw matched features
-
-        array1d<float> current_features = lmm_enabled ? slice1d<float>(features_curr) : db.features(frame_index);
-        denormalize_features(current_features, db.features_offset, db.features_scale);
-        draw_features(current_features, bone_positions(0), bone_rotations(0), MAROON);
-
-        // Draw Simuation Bone
-
-        DrawSphereWires(to_Vector3(bone_positions(0)), 0.05f, 4, 10, MAROON);
-        DrawLine3D(to_Vector3(bone_positions(0)), to_Vector3(
-                bone_positions(0) + 0.6f * quat_mul_vec3(bone_rotations(0), vec3(0.0f, 0.0f, 1.0f))), MAROON);
-
-        // Draw Ground Plane
+//        // Draw matched features
+//
+//        array1d<float> current_features = lmm_enabled ? slice1d<float>(features_curr) : db.features(frame_index);
+//        denormalize_features(current_features, db.features_offset, db.features_scale);
+//        draw_features(current_features, bone_positions(0), bone_rotations(0), MAROON);
+//
+//        // Draw Simuation Bone
+//
+//        DrawSphereWires(to_Vector3(bone_positions(0)), 0.05f, 4, 10, MAROON);
+//        DrawLine3D(to_Vector3(bone_positions(0)), to_Vector3(
+//                bone_positions(0) + 0.6f * quat_mul_vec3(bone_rotations(0), vec3(0.0f, 0.0f, 1.0f))), MAROON);
+//
+//        // Draw Ground Plane
 
         DrawModel(ground_plane_model, (Vector3){0.0f, -0.01f, 0.0f}, 1.0f, WHITE);
         DrawGrid(20, 1.0f);
         draw_axis(vec3(), quat());
 
         EndMode3D();
-
-        // UI
-
-        //---------
-
-        float ui_sim_hei = 20;
-
-        GuiGroupBox((Rectangle){ 970, ui_sim_hei, 290, 250 }, "simulation object");
-
-        simulation_velocity_halflife = GuiSliderBar(
-                (Rectangle){ 1100, ui_sim_hei + 10, 120, 20 },
-                "velocity halflife",
-                TextFormat("%5.3f", simulation_velocity_halflife),
-                simulation_velocity_halflife, 0.0f, 0.5f);
-
-        simulation_rotation_halflife = GuiSliderBar(
-                (Rectangle){ 1100, ui_sim_hei + 40, 120, 20 },
-                "rotation halflife",
-                TextFormat("%5.3f", simulation_rotation_halflife),
-                simulation_rotation_halflife, 0.0f, 0.5f);
-
-        simulation_run_fwrd_speed = GuiSliderBar(
-                (Rectangle){ 1100, ui_sim_hei + 70, 120, 20 },
-                "run forward speed",
-                TextFormat("%5.3f", simulation_run_fwrd_speed),
-                simulation_run_fwrd_speed, 0.0f, 10.0f);
-
-        simulation_run_side_speed = GuiSliderBar(
-                (Rectangle){ 1100, ui_sim_hei + 100, 120, 20 },
-                "run sideways speed",
-                TextFormat("%5.3f", simulation_run_side_speed),
-                simulation_run_side_speed, 0.0f, 10.0f);
-
-        simulation_run_back_speed = GuiSliderBar(
-                (Rectangle){ 1100, ui_sim_hei + 130, 120, 20 },
-                "run backwards speed",
-                TextFormat("%5.3f", simulation_run_back_speed),
-                simulation_run_back_speed, 0.0f, 10.0f);
-
-        simulation_walk_fwrd_speed = GuiSliderBar(
-                (Rectangle){ 1100, ui_sim_hei + 160, 120, 20 },
-                "walk forward speed",
-                TextFormat("%5.3f", simulation_walk_fwrd_speed),
-                simulation_walk_fwrd_speed, 0.0f, 5.0f);
-
-        simulation_walk_side_speed = GuiSliderBar(
-                (Rectangle){ 1100, ui_sim_hei + 190, 120, 20 },
-                "walk sideways speed",
-                TextFormat("%5.3f", simulation_walk_side_speed),
-                simulation_walk_side_speed, 0.0f, 5.0f);
-
-        simulation_walk_back_speed = GuiSliderBar(
-                (Rectangle){ 1100, ui_sim_hei + 220, 120, 20 },
-                "walk backwards speed",
-                TextFormat("%5.3f", simulation_walk_back_speed),
-                simulation_walk_back_speed, 0.0f, 5.0f);
-
-        //---------
-
-        float ui_inert_hei = 280;
-
-        GuiGroupBox((Rectangle){ 970, ui_inert_hei, 290, 40 }, "inertiaization blending");
-
-        inertialize_blending_halflife = GuiSliderBar(
-                (Rectangle){ 1100, ui_inert_hei + 10, 120, 20 },
-                "halflife",
-                TextFormat("%5.3f", inertialize_blending_halflife),
-                inertialize_blending_halflife, 0.0f, 0.3f);
-
-        //---------
-
-        float ui_lmm_hei = 330;
-
-        GuiGroupBox((Rectangle){ 970, ui_lmm_hei, 290, 40 }, "learned motion matching");
-
-        lmm_enabled = GuiCheckBox(
-                (Rectangle){ 1000, ui_lmm_hei + 10, 20, 20 },
-                "enabled",
-                lmm_enabled);
-
-        //---------
-
-        float ui_ctrl_hei = 380;
-
-        GuiGroupBox((Rectangle){ 1010, ui_ctrl_hei, 250, 140 }, "controls");
-
-        GuiLabel((Rectangle){ 1030, ui_ctrl_hei +  10, 200, 20 }, "Left Trigger - Strafe");
-        GuiLabel((Rectangle){ 1030, ui_ctrl_hei +  30, 200, 20 }, "Left Stick - Move");
-        GuiLabel((Rectangle){ 1030, ui_ctrl_hei +  50, 200, 20 }, "Right Stick - Camera / Facing (Stafe)");
-        GuiLabel((Rectangle){ 1030, ui_ctrl_hei +  70, 200, 20 }, "Left Shoulder - Zoom In");
-        GuiLabel((Rectangle){ 1030, ui_ctrl_hei +  90, 200, 20 }, "Right Shoulder - Zoom Out");
-        GuiLabel((Rectangle){ 1030, ui_ctrl_hei + 110, 200, 20 }, "A Button - Walk");
-
-
-
-        //---------
-
-        GuiGroupBox((Rectangle){ 20, 20, 290, 190 }, "feature weights");
-
-        feature_weight_foot_position = GuiSliderBar(
-                (Rectangle){ 150, 30, 120, 20 },
-                "foot position",
-                TextFormat("%5.3f", feature_weight_foot_position),
-                feature_weight_foot_position, 0.001f, 3.0f);
-
-        feature_weight_foot_velocity = GuiSliderBar(
-                (Rectangle){ 150, 60, 120, 20 },
-                "foot velocity",
-                TextFormat("%5.3f", feature_weight_foot_velocity),
-                feature_weight_foot_velocity, 0.001f, 3.0f);
-
-        feature_weight_hip_velocity = GuiSliderBar(
-                (Rectangle){ 150, 90, 120, 20 },
-                "hip velocity",
-                TextFormat("%5.3f", feature_weight_hip_velocity),
-                feature_weight_hip_velocity, 0.001f, 3.0f);
-
-        feature_weight_trajectory_positions = GuiSliderBar(
-                (Rectangle){ 150, 120, 120, 20 },
-                "trajectory positions",
-                TextFormat("%5.3f", feature_weight_trajectory_positions),
-                feature_weight_trajectory_positions, 0.001f, 3.0f);
-
-        feature_weight_trajectory_directions = GuiSliderBar(
-                (Rectangle){ 150, 150, 120, 20 },
-                "trajectory directions",
-                TextFormat("%5.3f", feature_weight_trajectory_directions),
-                feature_weight_trajectory_directions, 0.001f, 3.0f);
-
-        if (GuiButton((Rectangle){ 150, 180, 120, 20 }, "rebuild database"))
-        {
-            database_build_matching_features(
-                    db,
-                    feature_weight_foot_position,
-                    feature_weight_foot_velocity,
-                    feature_weight_hip_velocity,
-                    feature_weight_trajectory_positions,
-                    feature_weight_trajectory_directions);
-        }
-
-        //---------
-
-        float ui_sync_hei = 220;
-
-        GuiGroupBox((Rectangle){ 20, ui_sync_hei, 290, 70 }, "synchronization");
-
-        synchronization_enabled = GuiCheckBox(
-                (Rectangle){ 50, ui_sync_hei + 10, 20, 20 },
-                "enabled",
-                synchronization_enabled);
-
-        synchronization_data_factor = GuiSliderBar(
-                (Rectangle){ 150, ui_sync_hei + 40, 120, 20 },
-                "data-driven amount",
-                TextFormat("%5.3f", synchronization_data_factor),
-                synchronization_data_factor, 0.0f, 1.0f);
-
-        //---------
-
-        float ui_adj_hei = 300;
-
-        GuiGroupBox((Rectangle){ 20, ui_adj_hei, 290, 130 }, "adjustment");
-
-        adjustment_enabled = GuiCheckBox(
-                (Rectangle){ 50, ui_adj_hei + 10, 20, 20 },
-                "enabled",
-                adjustment_enabled);
-
-        adjustment_by_velocity_enabled = GuiCheckBox(
-                (Rectangle){ 50, ui_adj_hei + 40, 20, 20 },
-                "clamp to max velocity",
-                adjustment_by_velocity_enabled);
-
-        adjustment_position_halflife = GuiSliderBar(
-                (Rectangle){ 150, ui_adj_hei + 70, 120, 20 },
-                "position halflife",
-                TextFormat("%5.3f", adjustment_position_halflife),
-                adjustment_position_halflife, 0.0f, 0.5f);
-
-        adjustment_rotation_halflife = GuiSliderBar(
-                (Rectangle){ 150, ui_adj_hei + 100, 120, 20 },
-                "rotation halflife",
-                TextFormat("%5.3f", adjustment_rotation_halflife),
-                adjustment_rotation_halflife, 0.0f, 0.5f);
-
-        //---------
-
-        float ui_clamp_hei = 440;
-
-        GuiGroupBox((Rectangle){ 20, ui_clamp_hei, 290, 100 }, "clamping");
-
-        clamping_enabled = GuiCheckBox(
-                (Rectangle){ 50, ui_clamp_hei + 10, 20, 20 },
-                "enabled",
-                clamping_enabled);
-
-        clamping_max_distance = GuiSliderBar(
-                (Rectangle){ 150, ui_clamp_hei + 40, 120, 20 },
-                "distance",
-                TextFormat("%5.3f", clamping_max_distance),
-                clamping_max_distance, 0.0f, 0.5f);
-
-        clamping_max_angle = GuiSliderBar(
-                (Rectangle){ 150, ui_clamp_hei + 70, 120, 20 },
-                "angle",
-                TextFormat("%5.3f", clamping_max_angle),
-                clamping_max_angle, 0.0f, PIf);
-
-        //---------
-
-        float ui_ik_hei = 550;
-
-        GuiGroupBox((Rectangle){ 20, ui_ik_hei, 290, 100 }, "inverse kinematics");
-
-        bool ik_enabled_prev = ik_enabled;
-
-        ik_enabled = GuiCheckBox(
-                (Rectangle){ 50, ui_ik_hei + 10, 20, 20 },
-                "enabled",
-                ik_enabled);
-
-        // Foot locking needs resetting when IK is toggled
-        if (ik_enabled && !ik_enabled_prev)
-        {
-            for (int i = 0; i < contact_bones.size; i++)
-            {
-                vec3 bone_position;
-                vec3 bone_velocity;
-                quat bone_rotation;
-                vec3 bone_angular_velocity;
-
-                forward_kinematics_velocity(
-                        bone_position,
-                        bone_velocity,
-                        bone_rotation,
-                        bone_angular_velocity,
-                        bone_positions,
-                        bone_velocities,
-                        bone_rotations,
-                        bone_angular_velocities,
-                        db.bone_parents,
-                        contact_bones(i));
-
-                contact_reset(
-                        contact_states(i),
-                        contact_locks(i),
-                        contact_positions(i),
-                        contact_velocities(i),
-                        contact_points(i),
-                        contact_targets(i),
-                        contact_offset_positions(i),
-                        contact_offset_velocities(i),
-                        bone_position,
-                        bone_velocity,
-                        false);
-            }
-        }
-
-        ik_blending_halflife = GuiSliderBar(
-                (Rectangle){ 150, ui_ik_hei + 40, 120, 20 },
-                "blending halflife",
-                TextFormat("%5.3f", ik_blending_halflife),
-                ik_blending_halflife, 0.0f, 1.0f);
-
-        ik_unlock_radius = GuiSliderBar(
-                (Rectangle){ 150, ui_ik_hei + 70, 120, 20 },
-                "unlock radius",
-                TextFormat("%5.3f", ik_unlock_radius),
-                ik_unlock_radius, 0.0f, 0.5f);
-
-        //---------
-
         EndDrawing();
 
     };
 
-#if defined(PLATFORM_WEB)
     std::function<void()> u{update_func};
     emscripten_set_main_loop_arg(update_callback, &u, 0, 1);
-#else
-    while (!WindowShouldClose())
-    {
-        update_func();
-    }
-#endif
 
     // Unload stuff and finish
     UnloadModel(character_model);
